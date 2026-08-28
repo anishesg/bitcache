@@ -161,6 +161,10 @@ torch::Tensor compute_head_entropy(
     return entropy;
 }
 
+// size queries so Python can allocate correctly-sized buffers
+int64_t sizeof_binary_vec()   { return (int64_t)sizeof(BinaryVec);   }
+int64_t sizeof_residual_vec() { return (int64_t)sizeof(ResidualVec); }
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("binary_encode",          &binary_encode,          "Encode fp16 vectors to binary (sign bits + scale)");
     m.def("residual_encode",        &residual_encode,        "Compute INT4 residuals from fp16 and binary encoding");
@@ -168,4 +172,6 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
     m.def("compensated_attention",  &compensated_attention,  "Residual-compensated binary attention");
     m.def("online_encode_token",    &online_encode_token,    "Fused single-token encode and cache append");
     m.def("compute_head_entropy",   &compute_head_entropy,   "Compute per-head attention entropy for adaptive precision");
+    m.def("sizeof_binary_vec",      &sizeof_binary_vec,      "Size in bytes of one BinaryVec struct");
+    m.def("sizeof_residual_vec",    &sizeof_residual_vec,    "Size in bytes of one ResidualVec struct");
 }
